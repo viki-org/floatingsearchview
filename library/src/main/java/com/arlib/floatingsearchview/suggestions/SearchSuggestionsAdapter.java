@@ -62,7 +62,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
         void onItemSelected(SearchSuggestion item);
 
-        void onMoveItemToSearchClicked(SearchSuggestion item);
+        void onRightIconClicked(SearchSuggestion item);
     }
 
     public static class SearchSuggestionViewHolder extends RecyclerView.ViewHolder {
@@ -78,7 +78,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
             void onItemClicked(int adapterPosition);
 
-            void onMoveItemToSearchClicked(int adapterPosition);
+            void onRightIconClicked(int adapterPosition);
         }
 
         public SearchSuggestionViewHolder(View v, Listener listener) {
@@ -96,7 +96,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                     int adapterPosition = getAdapterPosition();
                     if (mListener != null && adapterPosition != RecyclerView.NO_POSITION) {
-                        mListener.onMoveItemToSearchClicked(getAdapterPosition());
+                        mListener.onRightIconClicked(getAdapterPosition());
                     }
                 }
             });
@@ -153,10 +153,10 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
                     }
 
                     @Override
-                    public void onMoveItemToSearchClicked(int adapterPosition) {
+                    public void onRightIconClicked(int adapterPosition) {
 
                         if (mListener != null) {
-                            mListener.onMoveItemToSearchClicked(mSearchSuggestions
+                            mListener.onRightIconClicked(mSearchSuggestions
                                     .get(adapterPosition));
                         }
                     }

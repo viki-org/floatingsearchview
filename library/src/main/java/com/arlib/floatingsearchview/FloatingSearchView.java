@@ -109,6 +109,9 @@ public class FloatingSearchView extends FrameLayout {
     public final static int LEFT_ACTION_MODE_NO_LEFT_ACTION = 4;
     private final static int LEFT_ACTION_MODE_NOT_SET = -1;
 
+    public final static int RIGHT_ACTION_MODE_MOVE_UP = 1;
+    public final static int RIGHT_ACTION_MODE_CUSTOM = 2;
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({LEFT_ACTION_MODE_SHOW_HAMBURGER, LEFT_ACTION_MODE_SHOW_SEARCH,
             LEFT_ACTION_MODE_SHOW_HOME, LEFT_ACTION_MODE_NO_LEFT_ACTION, LEFT_ACTION_MODE_NOT_SET})
@@ -1245,7 +1248,7 @@ public class FloatingSearchView extends FrameLayout {
                     }
 
                     @Override
-                    public void onMoveItemToSearchClicked(SearchSuggestion item) {
+                    public void onRightIconClicked(SearchSuggestion item) {
 
                         mSearchInput.setText(item.getBody());
                         //move cursor to end of text
@@ -1744,7 +1747,7 @@ public class FloatingSearchView extends FrameLayout {
         savedState.suggestionTextSize = this.mSuggestionsTextSizePx;
         savedState.searchHint = this.mSearchHint;
         savedState.dismissOnOutsideClick = this.mDismissOnOutsideTouch;
-        savedState.showMoveSuggestionUpBtn = this.mShowSuggestionRightIcon;
+        savedState.showSuggestionRightIcon = this.mShowSuggestionRightIcon;
         savedState.showSearchKey = this.mShowSearchKey;
         savedState.isTitleSet = this.mIsTitleSet;
         savedState.backgroundColor = this.mBackgroundColor;
@@ -1758,6 +1761,7 @@ public class FloatingSearchView extends FrameLayout {
         savedState.suggestionUpBtnColor = this.mSuggestionTextColor;
         savedState.dividerColor = this.mDividerColor;
         savedState.suggestionDividerColor = this.mSuggestionDividerColor;
+        savedState.rightIconColor = this.mSuggestionRightIconColor;
         savedState.menuId = mMenuId;
         savedState.leftActionMode = mLeftActionMode;
         savedState.dimBackground = mDimBackground;
@@ -1776,7 +1780,7 @@ public class FloatingSearchView extends FrameLayout {
         this.mSuggestionSectionAnimDuration = savedState.suggestionsSectionAnimSuration;
         setSuggestionItemTextSize(savedState.suggestionTextSize);
         setDismissOnOutsideClick(savedState.dismissOnOutsideClick);
-        setShowSuggestionRightIcon(savedState.showMoveSuggestionUpBtn);
+        setShowSuggestionRightIcon(savedState.showSuggestionRightIcon);
         setShowSearchKey(savedState.showSearchKey);
         setSearchHint(savedState.searchHint);
         setBackgroundColor(savedState.backgroundColor);
@@ -1790,6 +1794,7 @@ public class FloatingSearchView extends FrameLayout {
         setSuggestionRightIconColor(savedState.suggestionUpBtnColor);
         setDividerColor(savedState.dividerColor);
         setSuggestionDividerColor(savedState.suggestionDividerColor);
+        setSuggestionRightIconColor(savedState.rightIconColor);
         setLeftActionMode(savedState.leftActionMode);
         setDimBackground(savedState.dimBackground);
         setCloseSearchOnKeyboardDismiss(savedState.dismissOnSoftKeyboardDismiss);
@@ -1842,7 +1847,7 @@ public class FloatingSearchView extends FrameLayout {
         private int suggestionTextSize;
         private String searchHint;
         private boolean dismissOnOutsideClick;
-        private boolean showMoveSuggestionUpBtn;
+        private boolean showSuggestionRightIcon;
         private boolean showSearchKey;
         private boolean isTitleSet;
         private int backgroundColor;
@@ -1856,6 +1861,7 @@ public class FloatingSearchView extends FrameLayout {
         private int suggestionUpBtnColor;
         private int dividerColor;
         private int suggestionDividerColor;
+        private int rightIconColor;
         private int menuId;
         private int leftActionMode;
         private boolean dimBackground;
@@ -1874,7 +1880,7 @@ public class FloatingSearchView extends FrameLayout {
             suggestionTextSize = in.readInt();
             searchHint = in.readString();
             dismissOnOutsideClick = (in.readInt() != 0);
-            showMoveSuggestionUpBtn = (in.readInt() != 0);
+            showSuggestionRightIcon = (in.readInt() != 0);
             showSearchKey = (in.readInt() != 0);
             isTitleSet = (in.readInt() != 0);
             backgroundColor = in.readInt();
@@ -1888,6 +1894,7 @@ public class FloatingSearchView extends FrameLayout {
             suggestionUpBtnColor = in.readInt();
             dividerColor = in.readInt();
             suggestionDividerColor = in.readInt();
+            rightIconColor = in.readInt();
             menuId = in.readInt();
             leftActionMode = in.readInt();
             dimBackground = (in.readInt() != 0);
@@ -1904,7 +1911,7 @@ public class FloatingSearchView extends FrameLayout {
             out.writeInt(suggestionTextSize);
             out.writeString(searchHint);
             out.writeInt(dismissOnOutsideClick ? 1 : 0);
-            out.writeInt(showMoveSuggestionUpBtn ? 1 : 0);
+            out.writeInt(showSuggestionRightIcon ? 1 : 0);
             out.writeInt(showSearchKey ? 1 : 0);
             out.writeInt(isTitleSet ? 1 : 0);
             out.writeInt(backgroundColor);
@@ -1918,6 +1925,7 @@ public class FloatingSearchView extends FrameLayout {
             out.writeInt(suggestionUpBtnColor);
             out.writeInt(dividerColor);
             out.writeInt(suggestionDividerColor);
+            out.writeInt(rightIconColor);
             out.writeInt(menuId);
             out.writeInt(leftActionMode);
             out.writeInt(dimBackground ? 1 : 0);
