@@ -49,7 +49,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
     private boolean mShowRightMoveUpBtn = false;
     private int mBodyTextSizePx;
     private int mTextColor = -1;
-    private int mRightIconColor = -1;
     private int mDividerColor = -1;
 
     public interface OnBindSuggestionCallback {
@@ -121,7 +120,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         this.mBodyTextSizePx = suggestionTextSize;
 
         mRightIconDrawable = Util.getWrappedDrawable(mContext, R.drawable.ic_arrow_back_black_24dp);
-        DrawableCompat.setTint(mRightIconDrawable, Util.getColor(mContext, R.color.gray_active_icon));
     }
 
     public void swapData(List<? extends SearchSuggestion> searchSuggestions) {
@@ -213,15 +211,8 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public void setRightIconColor(int color) {
-
-        boolean notify = false;
-        if (this.mRightIconColor != color) {
-            notify = true;
-        }
-        this.mRightIconColor = color;
-        if (notify) {
-            notifyDataSetChanged();
-        }
+        DrawableCompat.setTint(mRightIconDrawable, color);
+        notifyDataSetChanged();
     }
 
     public void setDividerColor(@ColorInt int color) {
