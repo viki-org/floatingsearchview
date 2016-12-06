@@ -13,7 +13,7 @@
             <enum name="showHome" value="3" />
             <enum name="noLeftAction" value="4" />
         </attr>
-        <attr name="floatingSearch_rightActionMode">
+        <attr name="floatingSearch_suggestionRightActionMode">
             <enum name="moveSuggestionUp" value="1"/>
             <enum name="custom" value="2"/>
         </attr>

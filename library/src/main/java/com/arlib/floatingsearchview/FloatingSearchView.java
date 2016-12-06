@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -118,8 +119,16 @@ public class FloatingSearchView extends FrameLayout {
     public @interface LeftActionMode {
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({RIGHT_ACTION_MODE_MOVE_UP, RIGHT_ACTION_MODE_CUSTOM})
+    public @interface SuggestionRightActionMode {
+    }
+
     @LeftActionMode
     private final int ATTRS_SEARCH_BAR_LEFT_ACTION_MODE_DEFAULT = LEFT_ACTION_MODE_NO_LEFT_ACTION;
+    @SuggestionRightActionMode
+    private final int ATTRS_RIGHT_ACTION_MODE_DEFAULT = RIGHT_ACTION_MODE_MOVE_UP;
+
     private final boolean ATTRS_SHOW_SUGGESTION_RIGHT_DEFAULT = false;
     private final boolean ATTRS_DISMISS_ON_OUTSIDE_TOUCH_DEFAULT = true;
     private final boolean ATTRS_DISMISS_ON_KEYBOARD_DISMISS_DEFAULT = false;
@@ -192,6 +201,9 @@ public class FloatingSearchView extends FrameLayout {
     private boolean mShowSuggestionRightIcon = ATTRS_SHOW_SUGGESTION_RIGHT_DEFAULT;
     private OnSuggestionsListHeightChanged mOnSuggestionsListHeightChanged;
     private long mSuggestionSectionAnimDuration;
+
+    @SuggestionRightActionMode
+    private int mSuggestionRightActionMode = RIGHT_ACTION_MODE_MOVE_UP;
 
     //An interface for implementing a listener that will get notified when the suggestions
     //section's height is set. This is to be used internally only.
@@ -493,9 +505,14 @@ public class FloatingSearchView extends FrameLayout {
             setSuggestionItemTextSize(a.getDimensionPixelSize(
                     R.styleable.FloatingSearchView_floatingSearch_searchSuggestionTextSize,
                     Util.spToPx(ATTRS_SUGGESTION_TEXT_SIZE_SP_DEFAULT)));
+
             //noinspection ResourceType
             mLeftActionMode = a.getInt(R.styleable.FloatingSearchView_floatingSearch_leftActionMode,
                     ATTRS_SEARCH_BAR_LEFT_ACTION_MODE_DEFAULT);
+            //noinspection ResourceType
+            mSuggestionRightActionMode = a.getInt(R.styleable.FloatingSearchView_floatingSearch_suggestionRightActionMode,
+                    ATTRS_RIGHT_ACTION_MODE_DEFAULT);
+
             if (a.hasValue(R.styleable.FloatingSearchView_floatingSearch_menu)) {
                 mMenuId = a.getResourceId(R.styleable.FloatingSearchView_floatingSearch_menu, -1);
             }
@@ -855,9 +872,22 @@ public class FloatingSearchView extends FrameLayout {
      */
     public void setSuggestionRightIconColor(int color) {
         this.mSuggestionRightIconColor = color;
-        if (mSuggestionsAdapter != null) {
-            mSuggestionsAdapter.setRightIconColor(this.mSuggestionRightIconColor);
+        refreshSuggestionRightIcon();
+    }
+
+    private void refreshSuggestionRightIcon() {
+        @DrawableRes int res;
+        switch (mSuggestionRightActionMode) {
+            case RIGHT_ACTION_MODE_CUSTOM:
+                res = R.drawable.ic_clear_black_24dp;
+                break;
+            default:
+                res = R.drawable.ic_arrow_back_black_24dp;
+                break;
         }
+
+        if (mSuggestionsAdapter != null)
+            mSuggestionsAdapter.setRightIcon(this.mSuggestionRightIconColor, res);
     }
 
     /**
@@ -890,6 +920,11 @@ public class FloatingSearchView extends FrameLayout {
     public void setLeftActionMode(@LeftActionMode int mode) {
         mLeftActionMode = mode;
         refreshLeftIcon();
+    }
+
+    public void setSuggestionRightActionMode(@SuggestionRightActionMode int mode) {
+        mSuggestionRightActionMode = mode;
+        refreshSuggestionRightIcon();
     }
 
     private void refreshLeftIcon() {
@@ -1257,7 +1292,7 @@ public class FloatingSearchView extends FrameLayout {
                 });
         refreshShowSuggestionRightIcon();
         mSuggestionsAdapter.setTextColor(this.mSuggestionTextColor);
-        mSuggestionsAdapter.setRightIconColor(this.mSuggestionRightIconColor);
+        refreshSuggestionRightIcon();
         mSuggestionsAdapter.setDividerColor(this.mSuggestionDividerColor);
 
         mSuggestionsList.setAdapter(mSuggestionsAdapter);
@@ -1764,6 +1799,7 @@ public class FloatingSearchView extends FrameLayout {
         savedState.rightIconColor = this.mSuggestionRightIconColor;
         savedState.menuId = mMenuId;
         savedState.leftActionMode = mLeftActionMode;
+        savedState.suggestionRightActionMode = mSuggestionRightActionMode;
         savedState.dimBackground = mDimBackground;
         savedState.dismissOnSoftKeyboardDismiss = this.mDismissOnOutsideTouch;
         return savedState;
@@ -1796,6 +1832,7 @@ public class FloatingSearchView extends FrameLayout {
         setSuggestionDividerColor(savedState.suggestionDividerColor);
         setSuggestionRightIconColor(savedState.rightIconColor);
         setLeftActionMode(savedState.leftActionMode);
+        setSuggestionRightActionMode(savedState.suggestionRightActionMode);
         setDimBackground(savedState.dimBackground);
         setCloseSearchOnKeyboardDismiss(savedState.dismissOnSoftKeyboardDismiss);
 
@@ -1864,6 +1901,7 @@ public class FloatingSearchView extends FrameLayout {
         private int rightIconColor;
         private int menuId;
         private int leftActionMode;
+        private int suggestionRightActionMode;
         private boolean dimBackground;
         private long suggestionsSectionAnimSuration;
         private boolean dismissOnSoftKeyboardDismiss;
@@ -1897,6 +1935,7 @@ public class FloatingSearchView extends FrameLayout {
             rightIconColor = in.readInt();
             menuId = in.readInt();
             leftActionMode = in.readInt();
+            suggestionRightActionMode = in.readInt();
             dimBackground = (in.readInt() != 0);
             suggestionsSectionAnimSuration = in.readLong();
             dismissOnSoftKeyboardDismiss = (in.readInt() != 0);
@@ -1928,6 +1967,7 @@ public class FloatingSearchView extends FrameLayout {
             out.writeInt(rightIconColor);
             out.writeInt(menuId);
             out.writeInt(leftActionMode);
+            out.writeInt(suggestionRightActionMode);
             out.writeInt(dimBackground ? 1 : 0);
             out.writeLong(suggestionsSectionAnimSuration);
             out.writeInt(dismissOnSoftKeyboardDismiss ? 1 : 0);

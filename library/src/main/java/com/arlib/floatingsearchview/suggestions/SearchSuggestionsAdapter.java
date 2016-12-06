@@ -19,6 +19,7 @@ package com.arlib.floatingsearchview.suggestions;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -118,8 +119,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         this.mContext = context;
         this.mListener = listener;
         this.mBodyTextSizePx = suggestionTextSize;
-
-        mRightIconDrawable = Util.getWrappedDrawable(mContext, R.drawable.ic_arrow_back_black_24dp);
     }
 
     public void swapData(List<? extends SearchSuggestion> searchSuggestions) {
@@ -210,7 +209,8 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    public void setRightIconColor(int color) {
+    public void setRightIcon(int color, @DrawableRes int drawableRes) {
+        mRightIconDrawable = Util.getWrappedDrawable(mContext, drawableRes);
         DrawableCompat.setTint(mRightIconDrawable, color);
         notifyDataSetChanged();
     }

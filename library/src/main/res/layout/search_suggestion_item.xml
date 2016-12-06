@@ -48,8 +48,8 @@
             android:alpha="1"
             android:background="@drawable/oval_btn_selector"
             android:padding="@dimen/square_button_padding"
-            android:rotation="45"
             android:src="@drawable/ic_arrow_back_black_24dp"
+            tools:tint="@color/background"
             android:visibility="visible" />
 
     </LinearLayout>
