@@ -51,6 +51,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
     private int mBodyTextSizePx;
     private int mTextColor = -1;
     private int mDividerColor = -1;
+    private float mRotateAngle = 0;
 
     public interface OnBindSuggestionCallback {
 
@@ -163,6 +164,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
                 });
 
         viewHolder.rightIcon.setImageDrawable(mRightIconDrawable);
+        viewHolder.rightIcon.setRotation(mRotateAngle);
         viewHolder.body.setTextSize(TypedValue.COMPLEX_UNIT_PX, mBodyTextSizePx);
 
         if (mDividerColor != -1)
@@ -209,9 +211,10 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    public void setRightIcon(int color, @DrawableRes int drawableRes) {
+    public void setRightIcon(int color, @DrawableRes int drawableRes, float rotateAngle) {
         mRightIconDrawable = Util.getWrappedDrawable(mContext, drawableRes);
         DrawableCompat.setTint(mRightIconDrawable, color);
+        this.mRotateAngle = rotateAngle;
         notifyDataSetChanged();
     }
 

@@ -111,7 +111,7 @@ public class FloatingSearchView extends FrameLayout {
     private final static int LEFT_ACTION_MODE_NOT_SET = -1;
 
     public final static int RIGHT_ACTION_MODE_MOVE_UP = 1;
-    public final static int RIGHT_ACTION_MODE_CUSTOM = 2;
+    public final static int RIGHT_ACTION_MODE_REMOVE_ITEM = 2;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({LEFT_ACTION_MODE_SHOW_HAMBURGER, LEFT_ACTION_MODE_SHOW_SEARCH,
@@ -120,7 +120,7 @@ public class FloatingSearchView extends FrameLayout {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({RIGHT_ACTION_MODE_MOVE_UP, RIGHT_ACTION_MODE_CUSTOM})
+    @IntDef({RIGHT_ACTION_MODE_MOVE_UP, RIGHT_ACTION_MODE_REMOVE_ITEM})
     public @interface SuggestionRightActionMode {
     }
 
@@ -264,6 +264,15 @@ public class FloatingSearchView extends FrameLayout {
          * @param currentQuery the text that is currently set in the query TextView
          */
         void onSearchAction(String currentQuery);
+
+        /**
+         * Called when the right icon on the search suggestion is clicked.
+         * Note: This will only be called when suggestionRightActionMode is
+         * set to {@value #RIGHT_ACTION_MODE_REMOVE_ITEM}
+         *
+         * @param searchSuggestion
+         */
+        void onRemoveItemClicked(SearchSuggestion searchSuggestion);
     }
 
     /**
@@ -877,17 +886,19 @@ public class FloatingSearchView extends FrameLayout {
 
     private void refreshSuggestionRightIcon() {
         @DrawableRes int res;
+        float angle = 0;
         switch (mSuggestionRightActionMode) {
-            case RIGHT_ACTION_MODE_CUSTOM:
+            case RIGHT_ACTION_MODE_REMOVE_ITEM:
                 res = R.drawable.ic_clear_black_24dp;
                 break;
             default:
                 res = R.drawable.ic_arrow_back_black_24dp;
+                angle = 45;
                 break;
         }
 
         if (mSuggestionsAdapter != null)
-            mSuggestionsAdapter.setRightIcon(this.mSuggestionRightIconColor, res);
+            mSuggestionsAdapter.setRightIcon(this.mSuggestionRightIconColor, res, angle);
     }
 
     /**
@@ -1284,10 +1295,14 @@ public class FloatingSearchView extends FrameLayout {
 
                     @Override
                     public void onRightIconClicked(SearchSuggestion item) {
-
-                        mSearchInput.setText(item.getBody());
-                        //move cursor to end of text
-                        mSearchInput.setSelection(mSearchInput.getText().length());
+                        if (mSuggestionRightActionMode == RIGHT_ACTION_MODE_MOVE_UP) {
+                            mSearchInput.setText(item.getBody());
+                            //move cursor to end of text
+                            mSearchInput.setSelection(mSearchInput.getText().length());
+                        }
+                        else if(mSuggestionRightActionMode == RIGHT_ACTION_MODE_REMOVE_ITEM && mSearchListener!=null) {
+                            mSearchListener.onRemoveItemClicked(item);
+                        }
                     }
                 });
         refreshShowSuggestionRightIcon();

@@ -15,7 +15,7 @@
         </attr>
         <attr name="floatingSearch_suggestionRightActionMode">
             <enum name="moveSuggestionUp" value="1"/>
-            <enum name="custom" value="2"/>
+            <enum name="removeItem" value="2"/>
         </attr>
         <attr name="floatingSearch_showVoiceInput" format="boolean"/>
         <attr name="floatingSearch_showSearchKey" format="boolean"/>

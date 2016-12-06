@@ -49,8 +49,9 @@
             android:background="@drawable/oval_btn_selector"
             android:padding="@dimen/square_button_padding"
             android:src="@drawable/ic_arrow_back_black_24dp"
-            tools:tint="@color/background"
-            android:visibility="visible" />
+            android:visibility="visible"
+            tools:rotation="45"
+            tools:tint="@color/background" />
 
     </LinearLayout>
 
