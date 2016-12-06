@@ -117,7 +117,7 @@ public class FloatingSearchView extends FrameLayout {
 
     @LeftActionMode
     private final int ATTRS_SEARCH_BAR_LEFT_ACTION_MODE_DEFAULT = LEFT_ACTION_MODE_NO_LEFT_ACTION;
-    private final boolean ATTRS_SHOW_MOVE_UP_SUGGESTION_DEFAULT = false;
+    private final boolean ATTRS_SHOW_SUGGESTION_RIGHT_DEFAULT = false;
     private final boolean ATTRS_DISMISS_ON_OUTSIDE_TOUCH_DEFAULT = true;
     private final boolean ATTRS_DISMISS_ON_KEYBOARD_DISMISS_DEFAULT = false;
     private final boolean ATTRS_SEARCH_BAR_SHOW_SEARCH_KEY_DEFAULT = true;
@@ -186,7 +186,7 @@ public class FloatingSearchView extends FrameLayout {
     private int mSuggestionsTextSizePx;
     private boolean mIsInitialLayout = true;
     private boolean mIsSuggestionsSecHeightSet;
-    private boolean mShowMoveUpSuggestion = ATTRS_SHOW_MOVE_UP_SUGGESTION_DEFAULT;
+    private boolean mShowSuggestionRightIcon = ATTRS_SHOW_SUGGESTION_RIGHT_DEFAULT;
     private OnSuggestionsListHeightChanged mOnSuggestionsListHeightChanged;
     private long mSuggestionSectionAnimDuration;
 
@@ -498,8 +498,8 @@ public class FloatingSearchView extends FrameLayout {
             }
             setDimBackground(a.getBoolean(R.styleable.FloatingSearchView_floatingSearch_dimBackground,
                     ATTRS_SHOW_DIM_BACKGROUND_DEFAULT));
-            setShowMoveUpSuggestion(a.getBoolean(R.styleable.FloatingSearchView_floatingSearch_showMoveSuggestionUp,
-                    ATTRS_SHOW_MOVE_UP_SUGGESTION_DEFAULT));
+            setShowSuggestionRightIcon(a.getBoolean(R.styleable.FloatingSearchView_floatingSearch_showSuggestionRightIcon,
+                    ATTRS_SHOW_SUGGESTION_RIGHT_DEFAULT));
             this.mSuggestionSectionAnimDuration = a.getInt(R.styleable.FloatingSearchView_floatingSearch_suggestionsListAnimDuration,
                     ATTRS_SUGGESTION_ANIM_DURATION_DEFAULT);
             setBackgroundColor(a.getColor(R.styleable.FloatingSearchView_floatingSearch_backgroundColor
@@ -1106,14 +1106,14 @@ public class FloatingSearchView extends FrameLayout {
      *
      * @param show
      */
-    public void setShowMoveUpSuggestion(boolean show) {
-        mShowMoveUpSuggestion = show;
-        refreshShowMoveUpSuggestion();
+    public void setShowSuggestionRightIcon(boolean show) {
+        mShowSuggestionRightIcon = show;
+        refreshShowSuggestionRightIcon();
     }
 
-    private void refreshShowMoveUpSuggestion() {
+    private void refreshShowSuggestionRightIcon() {
         if (mSuggestionsAdapter != null) {
-            mSuggestionsAdapter.setShowMoveUpIcon(mShowMoveUpSuggestion);
+            mSuggestionsAdapter.setShowRightIcon(mShowSuggestionRightIcon);
         }
     }
 
@@ -1252,7 +1252,7 @@ public class FloatingSearchView extends FrameLayout {
                         mSearchInput.setSelection(mSearchInput.getText().length());
                     }
                 });
-        refreshShowMoveUpSuggestion();
+        refreshShowSuggestionRightIcon();
         mSuggestionsAdapter.setTextColor(this.mSuggestionTextColor);
         mSuggestionsAdapter.setRightIconColor(this.mSuggestionRightIconColor);
         mSuggestionsAdapter.setDividerColor(this.mSuggestionDividerColor);
@@ -1744,7 +1744,7 @@ public class FloatingSearchView extends FrameLayout {
         savedState.suggestionTextSize = this.mSuggestionsTextSizePx;
         savedState.searchHint = this.mSearchHint;
         savedState.dismissOnOutsideClick = this.mDismissOnOutsideTouch;
-        savedState.showMoveSuggestionUpBtn = this.mShowMoveUpSuggestion;
+        savedState.showMoveSuggestionUpBtn = this.mShowSuggestionRightIcon;
         savedState.showSearchKey = this.mShowSearchKey;
         savedState.isTitleSet = this.mIsTitleSet;
         savedState.backgroundColor = this.mBackgroundColor;
@@ -1776,7 +1776,7 @@ public class FloatingSearchView extends FrameLayout {
         this.mSuggestionSectionAnimDuration = savedState.suggestionsSectionAnimSuration;
         setSuggestionItemTextSize(savedState.suggestionTextSize);
         setDismissOnOutsideClick(savedState.dismissOnOutsideClick);
-        setShowMoveUpSuggestion(savedState.showMoveSuggestionUpBtn);
+        setShowSuggestionRightIcon(savedState.showMoveSuggestionUpBtn);
         setShowSearchKey(savedState.showSearchKey);
         setSearchHint(savedState.searchHint);
         setBackgroundColor(savedState.backgroundColor);

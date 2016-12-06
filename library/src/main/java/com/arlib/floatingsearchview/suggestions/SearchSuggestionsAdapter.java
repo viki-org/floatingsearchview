@@ -46,7 +46,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
     private Context mContext;
 
     private Drawable mRightIconDrawable;
-    private boolean mShowRightMoveUpBtn = false;
+    private boolean mShowRightIcon = false;
     private int mBodyTextSizePx;
     private int mTextColor = -1;
     private int mDividerColor = -1;
@@ -177,7 +177,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
         SearchSuggestionViewHolder viewHolder = (SearchSuggestionViewHolder) vh;
 
-        if (!mShowRightMoveUpBtn) {
+        if (!mShowRightIcon) {
             viewHolder.rightIcon.setEnabled(false);
             viewHolder.rightIcon.setVisibility(View.INVISIBLE);
         } else {
@@ -227,13 +227,13 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    public void setShowMoveUpIcon(boolean show) {
+    public void setShowRightIcon(boolean show) {
 
         boolean notify = false;
-        if (this.mShowRightMoveUpBtn != show) {
+        if (this.mShowRightIcon != show) {
             notify = true;
         }
-        this.mShowRightMoveUpBtn = show;
+        this.mShowRightIcon = show;
         if (notify) {
             notifyDataSetChanged();
         }
