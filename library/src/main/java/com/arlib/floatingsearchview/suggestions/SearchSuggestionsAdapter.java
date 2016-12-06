@@ -18,6 +18,7 @@ package com.arlib.floatingsearchview.suggestions;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -49,11 +50,11 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
     private int mBodyTextSizePx;
     private int mTextColor = -1;
     private int mRightIconColor = -1;
+    private int mDividerColor = -1;
 
     public interface OnBindSuggestionCallback {
 
-        void onBindSuggestion(View suggestionView, ImageView leftIcon, TextView textView,
-                              SearchSuggestion item, int itemPosition);
+        void onBindSuggestion(SearchSuggestionViewHolder holder, SearchSuggestion item, int itemPosition);
     }
 
     private OnBindSuggestionCallback mOnBindSuggestionCallback;
@@ -70,6 +71,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         public TextView body;
         public ImageView leftIcon;
         public ImageView rightIcon;
+        public View divider;
 
         private Listener mListener;
 
@@ -87,6 +89,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
             body = (TextView) v.findViewById(R.id.body);
             leftIcon = (ImageView) v.findViewById(R.id.left_icon);
             rightIcon = (ImageView) v.findViewById(R.id.right_icon);
+            divider = v.findViewById(R.id.divider);
 
             rightIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -165,6 +168,9 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         viewHolder.rightIcon.setImageDrawable(mRightIconDrawable);
         viewHolder.body.setTextSize(TypedValue.COMPLEX_UNIT_PX, mBodyTextSizePx);
 
+        if (mDividerColor != -1)
+            viewHolder.divider.setBackgroundColor(mDividerColor);
+
         return viewHolder;
     }
 
@@ -185,8 +191,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         viewHolder.body.setText(suggestionItem.getBody());
 
         if (mOnBindSuggestionCallback != null) {
-            mOnBindSuggestionCallback.onBindSuggestion(viewHolder.itemView, viewHolder.leftIcon, viewHolder.body,
-                    suggestionItem, position);
+            mOnBindSuggestionCallback.onBindSuggestion(viewHolder, suggestionItem, position);
         }
     }
 
@@ -214,6 +219,18 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
             notify = true;
         }
         this.mRightIconColor = color;
+        if (notify) {
+            notifyDataSetChanged();
+        }
+    }
+
+    public void setDividerColor(@ColorInt int color) {
+
+        boolean notify = false;
+        if (this.mDividerColor != color) {
+            notify = true;
+        }
+        this.mDividerColor = color;
         if (notify) {
             notifyDataSetChanged();
         }
