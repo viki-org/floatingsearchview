@@ -764,7 +764,7 @@ public class FloatingSearchView extends FrameLayout {
         mBackgroundColor = color;
         if (mQuerySection != null && mSuggestionsList != null) {
             mQuerySection.setCardBackgroundColor(color);
-            mSuggestionsList.setBackgroundColor(color);
+            //mSuggestionsList.setBackgroundColor(color);
         }
     }
 
@@ -1645,6 +1645,14 @@ public class FloatingSearchView extends FrameLayout {
     public void setOnMenuItemClickListener(OnMenuItemClickListener listener) {
         this.mActionMenuItemListener = listener;
         //todo reset menu view listener
+    }
+
+    /**
+     * Add an item decoration to the suggestions adapter's recycler view
+     * @param itemDecoration the {@link android.support.v7.widget.RecyclerView.ItemDecoration} to add
+     */
+    public void addSearchSuggestionItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
+        mSuggestionsList.addItemDecoration(itemDecoration);
     }
 
     private void openMenuDrawable(final DrawerArrowDrawable drawerArrowDrawable, boolean withAnim) {
