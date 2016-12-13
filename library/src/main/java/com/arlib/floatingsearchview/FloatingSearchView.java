@@ -1278,19 +1278,18 @@ public class FloatingSearchView extends FrameLayout {
 
                     @Override
                     public void onItemSelected(SearchSuggestion item) {
-                        mIsFocused = false;
-
                         if (mSearchListener != null) {
                             mSearchListener.onSuggestionClicked(item);
                         }
 
+                        /*mIsFocused = false;
                         mSkipTextChangeEvent = true;
                         if (mIsTitleSet) {
                             setSearchBarTitle(item.getBody());
                         } else {
                             setSearchText(item.getBody());
                         }
-                        setSearchFocusedInternal(false);
+                        setSearchFocusedInternal(false);*/
                     }
 
                     @Override
