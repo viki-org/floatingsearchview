@@ -1,12 +1,12 @@
 package com.arlib.floatingsearchview.util.view;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.EditText;
 
-public class SearchInputView extends EditText {
+public class SearchInputView extends AppCompatEditText {
 
     private OnKeyboardSearchKeyClickListener mSearchKeyListener;
 
@@ -40,6 +40,7 @@ public class SearchInputView extends EditText {
 
     private void init() {
         setOnKeyListener(mOnKeyListener);
+        setTextIsSelectable(true);
     }
 
     @Override
