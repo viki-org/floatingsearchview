@@ -658,6 +658,11 @@ public class FloatingSearchView extends FrameLayout {
                 if (mCloseSearchOnSofteKeyboardDismiss) {
                     setSearchFocusedInternal(false);
                 }
+                else {
+                    mSkipQueryFocusChangeEvent = true;
+                    mIsFocused = false;
+                    mMainLayout.requestFocus();
+                }
             }
         });
 
@@ -1680,6 +1685,14 @@ public class FloatingSearchView extends FrameLayout {
      */
     public void setOnFocusChangeListener(OnFocusChangeListener listener) {
         this.mFocusChangeListener = listener;
+    }
+
+    /**
+     * Removes the listener that will be called when the focus
+     * of the search has changed.
+     */
+    public void removeOnFocusChangeListener() {
+        this.mFocusChangeListener = null;
     }
 
     /**
