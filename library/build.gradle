@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion rootProject.compileSDK
     buildToolsVersion rootProject.buildTools
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion rootProject.minSDK
+        targetSdkVersion rootProject.targetSDK
         versionCode 10
         versionName "2.0.3"
         //consumerProguardFiles 'consumer-proguard-rules.txt'
@@ -19,8 +19,8 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:design:$supportLibraryVersion"
-    compile "com.android.support:cardview-v7:$supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
 
     compile 'com.bartoszlipinski:viewpropertyobjectanimator:1.4.5'
 }
