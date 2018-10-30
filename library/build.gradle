@@ -18,8 +18,8 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:design:$rootProject.supportLibraryVersion"
-    implementation "com.android.support:cardview-v7:$rootProject.supportLibraryVersion"
+    implementation "com.google.android.material:material:$rootProject.materialVersion"
+    implementation "androidx.cardview:cardview:$rootProject.cardviewVersion"
 
     implementation 'com.bartoszlipinski:viewpropertyobjectanimator:1.4.5'
 }
