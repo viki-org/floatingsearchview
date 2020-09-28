@@ -32,21 +32,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
-import androidx.core.view.ViewPropertyAnimatorUpdateListener;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
-import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -65,6 +50,24 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.StyleRes;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.cardview.widget.CardView;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.GravityCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
+import androidx.core.view.ViewPropertyAnimatorUpdateListener;
+import androidx.core.widget.TextViewCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
@@ -156,6 +159,10 @@ public class FloatingSearchView extends FrameLayout {
     private boolean mIsTitleSet;
     private int mSearchInputTextColor = -1;
     private int mSearchInputHintColor = -1;
+
+    @StyleRes
+    private int mSearchInputTextAppearance = R.style.TextAppearance_AppCompat;
+
     private View mSearchInputParent;
     private String mOldQuery = "";
     private OnQueryChangeListener mQueryListener;
@@ -551,15 +558,16 @@ public class FloatingSearchView extends FrameLayout {
                     , Util.getColor(getContext(), R.color.gray_active_icon)));
             setSuggestionDividerColor(a.getColor(R.styleable.FloatingSearchView_floatingSearch_suggestionDividerColor
                     , Util.getColor(getContext(), R.color.divider)));
+            setQueryTextAppearance(a.getResourceId(R.styleable.FloatingSearchView_floatingSearch_queryTextAppearance, R.style.TextAppearance_AppCompat));
         } finally {
             a.recycle();
         }
     }
 
     private void setupQueryBar() {
-
-        mSearchInput.setTextColor(mSearchInputTextColor);
-        mSearchInput.setHintTextColor(mSearchInputHintColor);
+        setQueryTextColor(mSearchInputTextColor);
+        setHintTextColor(mSearchInputHintColor);
+        setQueryTextAppearance(mSearchInputTextAppearance);
 
         if (!isInEditMode() && mHostActivity != null) {
             mHostActivity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -862,6 +870,18 @@ public class FloatingSearchView extends FrameLayout {
         this.mSearchInputHintColor = color;
         if (mSearchInput != null) {
             mSearchInput.setHintTextColor(color);
+        }
+    }
+
+    /**
+     * Sets the text appearance of the search text
+     *
+     * @param textAppearanceResId the textAppearance resource id to be applied to the search text.
+     */
+    public void setQueryTextAppearance(@StyleRes int textAppearanceResId) {
+        this.mSearchInputTextAppearance = textAppearanceResId;
+        if (mSearchInput != null) {
+            TextViewCompat.setTextAppearance(mSearchInput, textAppearanceResId);
         }
     }
 
@@ -1816,7 +1836,7 @@ public class FloatingSearchView extends FrameLayout {
         savedState.suggestionsTextColor = this.mSuggestionTextColor;
         savedState.queryTextColor = this.mSearchInputTextColor;
         savedState.searchHintTextColor = this.mSearchInputHintColor;
-        savedState.actionOverflowMenueColor = this.mOverflowIconColor;
+        savedState.actionOverflowMenuColor = this.mOverflowIconColor;
         savedState.menuItemIconColor = this.mActionMenuItemColor;
         savedState.leftIconColor = this.mLeftActionIconColor;
         savedState.clearBtnColor = this.mClearBtnColor;
@@ -1829,6 +1849,7 @@ public class FloatingSearchView extends FrameLayout {
         savedState.suggestionRightActionMode = mSuggestionRightActionMode;
         savedState.dimBackground = mDimBackground;
         savedState.dismissOnSoftKeyboardDismiss = this.mDismissOnOutsideTouch;
+        savedState.queryTextAppearanceResId = this.mSearchInputTextAppearance;
         return savedState;
     }
 
@@ -1850,7 +1871,7 @@ public class FloatingSearchView extends FrameLayout {
         setSuggestionsTextColor(savedState.suggestionsTextColor);
         setQueryTextColor(savedState.queryTextColor);
         setHintTextColor(savedState.searchHintTextColor);
-        setActionMenuOverflowColor(savedState.actionOverflowMenueColor);
+        setActionMenuOverflowColor(savedState.actionOverflowMenuColor);
         setMenuItemIconColor(savedState.menuItemIconColor);
         setLeftActionIconColor(savedState.leftIconColor);
         setClearBtnColor(savedState.clearBtnColor);
@@ -1862,6 +1883,7 @@ public class FloatingSearchView extends FrameLayout {
         setSuggestionRightActionMode(savedState.suggestionRightActionMode);
         setDimBackground(savedState.dimBackground);
         setCloseSearchOnKeyboardDismiss(savedState.dismissOnSoftKeyboardDismiss);
+        setQueryTextAppearance(savedState.queryTextAppearanceResId);
 
         mSuggestionsSection.setEnabled(this.mIsFocused);
         if (this.mIsFocused) {
@@ -1918,7 +1940,7 @@ public class FloatingSearchView extends FrameLayout {
         private int suggestionsTextColor;
         private int queryTextColor;
         private int searchHintTextColor;
-        private int actionOverflowMenueColor;
+        private int actionOverflowMenuColor;
         private int menuItemIconColor;
         private int leftIconColor;
         private int clearBtnColor;
@@ -1932,6 +1954,7 @@ public class FloatingSearchView extends FrameLayout {
         private boolean dimBackground;
         private long suggestionsSectionAnimSuration;
         private boolean dismissOnSoftKeyboardDismiss;
+        private int queryTextAppearanceResId;
 
         SavedState(Parcelable superState) {
             super(superState);
@@ -1952,7 +1975,7 @@ public class FloatingSearchView extends FrameLayout {
             suggestionsTextColor = in.readInt();
             queryTextColor = in.readInt();
             searchHintTextColor = in.readInt();
-            actionOverflowMenueColor = in.readInt();
+            actionOverflowMenuColor = in.readInt();
             menuItemIconColor = in.readInt();
             leftIconColor = in.readInt();
             clearBtnColor = in.readInt();
@@ -1966,6 +1989,7 @@ public class FloatingSearchView extends FrameLayout {
             dimBackground = (in.readInt() != 0);
             suggestionsSectionAnimSuration = in.readLong();
             dismissOnSoftKeyboardDismiss = (in.readInt() != 0);
+            queryTextAppearanceResId  = in.readInt();
         }
 
         @Override
@@ -1984,7 +2008,7 @@ public class FloatingSearchView extends FrameLayout {
             out.writeInt(suggestionsTextColor);
             out.writeInt(queryTextColor);
             out.writeInt(searchHintTextColor);
-            out.writeInt(actionOverflowMenueColor);
+            out.writeInt(actionOverflowMenuColor);
             out.writeInt(menuItemIconColor);
             out.writeInt(leftIconColor);
             out.writeInt(clearBtnColor);
@@ -1998,6 +2022,7 @@ public class FloatingSearchView extends FrameLayout {
             out.writeInt(dimBackground ? 1 : 0);
             out.writeLong(suggestionsSectionAnimSuration);
             out.writeInt(dismissOnSoftKeyboardDismiss ? 1 : 0);
+            out.writeInt(queryTextAppearanceResId);
         }
 
         public static final Creator<SavedState> CREATOR
