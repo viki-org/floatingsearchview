@@ -111,14 +111,16 @@ public class FloatingSearchView extends FrameLayout {
     public final static int LEFT_ACTION_MODE_SHOW_SEARCH = 2;
     public final static int LEFT_ACTION_MODE_SHOW_HOME = 3;
     public final static int LEFT_ACTION_MODE_NO_LEFT_ACTION = 4;
+    public final static int LEFT_ACTION_MODE_BACK = 5;
     private final static int LEFT_ACTION_MODE_NOT_SET = -1;
 
     public final static int RIGHT_ACTION_MODE_MOVE_UP = 1;
     public final static int RIGHT_ACTION_MODE_REMOVE_ITEM = 2;
+    private OnClickListener mLeftActionDefaultOnClickListener;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({LEFT_ACTION_MODE_SHOW_HAMBURGER, LEFT_ACTION_MODE_SHOW_SEARCH,
-            LEFT_ACTION_MODE_SHOW_HOME, LEFT_ACTION_MODE_NO_LEFT_ACTION, LEFT_ACTION_MODE_NOT_SET})
+            LEFT_ACTION_MODE_SHOW_HOME, LEFT_ACTION_MODE_NO_LEFT_ACTION, LEFT_ACTION_MODE_BACK, LEFT_ACTION_MODE_NOT_SET})
     public @interface LeftActionMode {
     }
 
@@ -169,6 +171,7 @@ public class FloatingSearchView extends FrameLayout {
     private ImageView mLeftAction;
     private OnLeftMenuClickListener mOnMenuClickListener;
     private OnHomeActionClickListener mOnHomeActionClickListener;
+    private View.OnClickListener mOnBackClickListener;
     private ProgressBar mSearchProgress;
     private DrawerArrowDrawable mMenuBtnDrawable;
     private Drawable mIconBackArrow;
@@ -691,11 +694,10 @@ public class FloatingSearchView extends FrameLayout {
             }
         });
 
-        mLeftAction.setOnClickListener(new OnClickListener() {
+        mLeftActionDefaultOnClickListener = new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (isSearchBarFocused()) {
+                if (isSearchBarFocused() && mLeftActionMode != LEFT_ACTION_MODE_BACK) {
                     setSearchFocusedInternal(false);
                 } else {
                     switch (mLeftActionMode) {
@@ -710,6 +712,11 @@ public class FloatingSearchView extends FrameLayout {
                                 mOnHomeActionClickListener.onHomeClicked();
                             }
                             break;
+                        case LEFT_ACTION_MODE_BACK:
+                            if (mOnBackClickListener != null) {
+                                mOnBackClickListener.onClick(v);
+                            }
+                            break;
                         case LEFT_ACTION_MODE_NO_LEFT_ACTION:
                             //do nothing
                             break;
@@ -717,8 +724,8 @@ public class FloatingSearchView extends FrameLayout {
                 }
 
             }
-        });
-
+        };
+        mLeftAction.setOnClickListener(mLeftActionDefaultOnClickListener);
         refreshLeftIcon();
     }
 
@@ -978,6 +985,9 @@ public class FloatingSearchView extends FrameLayout {
             case LEFT_ACTION_MODE_SHOW_HOME:
                 mLeftAction.setImageDrawable(mMenuBtnDrawable);
                 mMenuBtnDrawable.setProgress(1.0f);
+                break;
+            case LEFT_ACTION_MODE_BACK:
+                mLeftAction.setImageDrawable(mIconBackArrow);
                 break;
             case LEFT_ACTION_MODE_NO_LEFT_ACTION:
                 mLeftAction.setVisibility(View.INVISIBLE);
@@ -1582,6 +1592,9 @@ public class FloatingSearchView extends FrameLayout {
             case LEFT_ACTION_MODE_SHOW_HOME:
                 //do nothing
                 break;
+            case LEFT_ACTION_MODE_BACK:
+                //do nothing
+                break;
             case LEFT_ACTION_MODE_NO_LEFT_ACTION:
                 mLeftAction.setImageDrawable(mIconBackArrow);
 
@@ -1623,6 +1636,9 @@ public class FloatingSearchView extends FrameLayout {
                 changeIcon(mLeftAction, mIconSearch, withAnim);
                 break;
             case LEFT_ACTION_MODE_SHOW_HOME:
+                //do nothing
+                break;
+            case LEFT_ACTION_MODE_BACK:
                 //do nothing
                 break;
             case LEFT_ACTION_MODE_NO_LEFT_ACTION:
@@ -2086,4 +2102,9 @@ public class FloatingSearchView extends FrameLayout {
             //do nothing
         }
     }
+
+    public void setOnBackModeClickListener(OnClickListener listener) {
+        this.mOnBackClickListener = listener;
+    }
+    
 }
