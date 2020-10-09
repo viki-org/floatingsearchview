@@ -35,7 +35,7 @@
         <attr name="floatingSearch_clearBtnColor" format="color" />
         <attr name="floatingSearch_backgroundColor" format="color" />
         <attr name="floatingSearch_dividerColor" format="color" />
-        <attr name="floatingSearch_suggestionDividerColor" format="color" />
+        <attr name="floatingSearch_suggestionDividerDrawable" format="reference" />
         <attr name="floatingSearch_viewTextColor" format="color" />
         <attr name="floatingSearch_hintTextColor" format="color" />
         <attr name="floatingSearch_dimBackground" format="boolean" />

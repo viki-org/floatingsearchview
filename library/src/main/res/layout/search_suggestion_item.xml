@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:background="@color/black">
+    android:background="?attr/selectableItemBackground"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,26 +17,27 @@
             android:layout_width="@dimen/square_button_size"
             android:layout_height="@dimen/square_button_size"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/search_bar_left_icon_left_margin"
             android:layout_marginStart="@dimen/search_bar_left_icon_left_margin"
+            android:layout_marginLeft="@dimen/search_bar_left_icon_left_margin"
             android:alpha="1"
             android:padding="@dimen/square_button_padding"
-            android:visibility="visible" />
+            android:visibility="visible"
+            tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/body"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center"
-            android:layout_marginLeft="@dimen/search_bar_search_input_left_margin"
             android:layout_marginStart="@dimen/search_bar_search_input_left_margin"
+            android:layout_marginLeft="@dimen/search_bar_search_input_left_margin"
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="start|center"
-            android:paddingBottom="4dp"
             android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:textSize="@dimen/suggestion_body_text_size"
-            tools:text="body" />
+            tools:text="@tools:sample/full_names" />
 
         <ImageView
             android:id="@+id/right_icon"
@@ -54,11 +55,4 @@
             tools:tint="@color/background" />
 
     </LinearLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        tools:background="@color/divider" />
-
 </LinearLayout>

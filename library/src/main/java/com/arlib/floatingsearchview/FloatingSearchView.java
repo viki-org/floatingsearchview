@@ -33,6 +33,7 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -51,11 +52,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.cardview.widget.CardView;
@@ -66,6 +67,7 @@ import androidx.core.view.ViewPropertyAnimatorListenerAdapter;
 import androidx.core.view.ViewPropertyAnimatorUpdateListener;
 import androidx.core.widget.TextViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -82,7 +84,6 @@ import com.bartoszlipinski.viewpropertyobjectanimator.ViewPropertyObjectAnimator
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -202,7 +203,7 @@ public class FloatingSearchView extends FrameLayout {
     private RecyclerView mSuggestionsList;
     private int mSuggestionTextColor = -1;
     private int mSuggestionRightIconColor;
-    private @ColorInt int mSuggestionDividerColor;
+    private @DrawableRes int mSuggestionDividerDrawable;
     private SearchSuggestionsAdapter mSuggestionsAdapter;
     private SearchSuggestionsAdapter.OnBindSuggestionCallback mOnBindSuggestionCallback;
     private int mSuggestionsTextSizePx;
@@ -214,6 +215,8 @@ public class FloatingSearchView extends FrameLayout {
 
     @SuggestionRightActionMode
     private int mSuggestionRightActionMode = RIGHT_ACTION_MODE_MOVE_UP;
+
+    private DividerItemDecoration dividerItemDecoration;
 
     //An interface for implementing a listener that will get notified when the suggestions
     //section's height is set. This is to be used internally only.
@@ -559,8 +562,12 @@ public class FloatingSearchView extends FrameLayout {
                     , Util.getColor(getContext(), R.color.hint_color)));
             setSuggestionRightIconColor(a.getColor(R.styleable.FloatingSearchView_floatingSearch_suggestionRightIconColor
                     , Util.getColor(getContext(), R.color.gray_active_icon)));
-            setSuggestionDividerColor(a.getColor(R.styleable.FloatingSearchView_floatingSearch_suggestionDividerColor
-                    , Util.getColor(getContext(), R.color.divider)));
+
+            TypedValue typedValue = new TypedValue();
+            getContext().getTheme().resolveAttribute(android.R.attr.listDivider, typedValue, true);
+            setSuggestionDividerDrawable(a.getResourceId(R.styleable.FloatingSearchView_floatingSearch_suggestionDividerDrawable
+                    , typedValue.resourceId));
+
             setQueryTextAppearance(a.getResourceId(R.styleable.FloatingSearchView_floatingSearch_queryTextAppearance, R.style.TextAppearance_AppCompat));
         } finally {
             a.recycle();
@@ -934,14 +941,17 @@ public class FloatingSearchView extends FrameLayout {
     }
 
     /**
-     * Set the divider color for the suggestion items'
+     * Set the divider drawable for the suggestion items'
      *
-     * @param color
+     * @param drawableResId
      */
-    public void setSuggestionDividerColor(@ColorInt int color) {
-        this.mSuggestionDividerColor = color;
-        if (mSuggestionsAdapter != null) {
-            mSuggestionsAdapter.setDividerColor(this.mSuggestionDividerColor);
+    public void setSuggestionDividerDrawable(@DrawableRes int drawableResId) {
+        this.mSuggestionDividerDrawable = drawableResId;
+        if (dividerItemDecoration != null) {
+            Drawable drawable = AppCompatResources.getDrawable(getContext(), drawableResId);
+            if (drawable != null) {
+                dividerItemDecoration.setDrawable(drawable);
+            }
         }
     }
 
@@ -1283,10 +1293,12 @@ public class FloatingSearchView extends FrameLayout {
     }
 
     private void setupSuggestionSection() {
+        dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.VERTICAL, false);
         mSuggestionsList.setLayoutManager(layoutManager);
+        mSuggestionsList.addItemDecoration(dividerItemDecoration);
         mSuggestionsList.setItemAnimator(null);
 
         final GestureDetector gestureDetector = new GestureDetector(getContext(),
@@ -1342,7 +1354,7 @@ public class FloatingSearchView extends FrameLayout {
         refreshShowSuggestionRightIcon();
         mSuggestionsAdapter.setTextColor(this.mSuggestionTextColor);
         refreshSuggestionRightIcon();
-        mSuggestionsAdapter.setDividerColor(this.mSuggestionDividerColor);
+        setSuggestionDividerDrawable(this.mSuggestionDividerDrawable);
 
         mSuggestionsList.setAdapter(mSuggestionsAdapter);
 
@@ -1857,7 +1869,7 @@ public class FloatingSearchView extends FrameLayout {
         savedState.clearBtnColor = this.mClearBtnColor;
         savedState.suggestionUpBtnColor = this.mSuggestionTextColor;
         savedState.dividerColor = this.mDividerColor;
-        savedState.suggestionDividerColor = this.mSuggestionDividerColor;
+        savedState.suggestionDividerDrawable = this.mSuggestionDividerDrawable;
         savedState.rightIconColor = this.mSuggestionRightIconColor;
         savedState.menuId = mMenuId;
         savedState.leftActionMode = mLeftActionMode;
@@ -1892,7 +1904,7 @@ public class FloatingSearchView extends FrameLayout {
         setClearBtnColor(savedState.clearBtnColor);
         setSuggestionRightIconColor(savedState.suggestionUpBtnColor);
         setDividerColor(savedState.dividerColor);
-        setSuggestionDividerColor(savedState.suggestionDividerColor);
+        setSuggestionDividerDrawable(savedState.suggestionDividerDrawable);
         setSuggestionRightIconColor(savedState.rightIconColor);
         setLeftActionMode(savedState.leftActionMode);
         setSuggestionRightActionMode(savedState.suggestionRightActionMode);
@@ -1961,7 +1973,7 @@ public class FloatingSearchView extends FrameLayout {
         private int clearBtnColor;
         private int suggestionUpBtnColor;
         private int dividerColor;
-        private int suggestionDividerColor;
+        private int suggestionDividerDrawable;
         private int rightIconColor;
         private int menuId;
         private int leftActionMode;
@@ -1996,7 +2008,7 @@ public class FloatingSearchView extends FrameLayout {
             clearBtnColor = in.readInt();
             suggestionUpBtnColor = in.readInt();
             dividerColor = in.readInt();
-            suggestionDividerColor = in.readInt();
+            suggestionDividerDrawable = in.readInt();
             rightIconColor = in.readInt();
             menuId = in.readInt();
             leftActionMode = in.readInt();
@@ -2029,7 +2041,7 @@ public class FloatingSearchView extends FrameLayout {
             out.writeInt(clearBtnColor);
             out.writeInt(suggestionUpBtnColor);
             out.writeInt(dividerColor);
-            out.writeInt(suggestionDividerColor);
+            out.writeInt(suggestionDividerDrawable);
             out.writeInt(rightIconColor);
             out.writeInt(menuId);
             out.writeInt(leftActionMode);
