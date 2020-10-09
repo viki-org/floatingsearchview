@@ -199,7 +199,6 @@ public class FloatingSearchView extends FrameLayout {
     private int mDividerColor;
 
     private RelativeLayout mSuggestionsSection;
-    private View mSuggestionListContainer;
     private RecyclerView mSuggestionsList;
     private int mSuggestionTextColor = -1;
     private int mSuggestionRightIconColor;
@@ -393,7 +392,6 @@ public class FloatingSearchView extends FrameLayout {
         mDivider = findViewById(R.id.divider);
 
         mSuggestionsSection = (RelativeLayout) findViewById(R.id.search_suggestions_section);
-        mSuggestionListContainer = findViewById(R.id.suggestions_list_container);
         mSuggestionsList = (RecyclerView) findViewById(R.id.suggestions_list);
 
         setupViews(attrs);
@@ -422,34 +420,6 @@ public class FloatingSearchView extends FrameLayout {
         super.onLayout(changed, l, t, r, b);
 
         if (mIsInitialLayout) {
-
-            //we need to add 5dp to the mSuggestionsSection because we are
-            //going to move it up by 5dp in order to cover the search bar's
-            //shadow padding and rounded corners. We also need to add an additional 10dp to
-            //mSuggestionsSection in order to hide mSuggestionListContainer's
-            //rounded corners and shadow for both, top and bottom.
-            int addedHeight = 3 * Util.dpToPx(CARD_VIEW_CORNERS_AND_TOP_BOTTOM_SHADOW_HEIGHT);
-            final int finalHeight = mSuggestionsSection.getHeight() + addedHeight;
-            mSuggestionsSection.getLayoutParams().height = finalHeight;
-            mSuggestionsSection.requestLayout();
-            ViewTreeObserver vto = mSuggestionListContainer.getViewTreeObserver();
-            vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-
-                    if (mSuggestionsSection.getHeight() == finalHeight) {
-                        Util.removeGlobalLayoutObserver(mSuggestionListContainer, this);
-
-                        mIsSuggestionsSecHeightSet = true;
-                        moveSuggestListToInitialPos();
-                        if (mSuggestionSecHeightListener != null) {
-                            mSuggestionSecHeightListener.onSuggestionSecHeightSet();
-                            mSuggestionSecHeightListener = null;
-                        }
-                    }
-                }
-            });
-
             mIsInitialLayout = false;
 
             refreshDimBackground();
@@ -492,7 +462,7 @@ public class FloatingSearchView extends FrameLayout {
                     ViewGroup.LayoutParams.MATCH_PARENT);
             mQuerySection.getLayoutParams().width = searchBarWidth;
             mDivider.getLayoutParams().width = searchBarWidth;
-            mSuggestionListContainer.getLayoutParams().width = searchBarWidth;
+            mSuggestionsList.getLayoutParams().width = searchBarWidth;
             int searchBarLeftMargin = a.getDimensionPixelSize(
                     R.styleable.FloatingSearchView_floatingSearch_searchBarMarginLeft,
                     ATTRS_SEARCH_BAR_MARGIN_DEFAULT);
@@ -1364,12 +1334,6 @@ public class FloatingSearchView extends FrameLayout {
         mSuggestionsSection.setTranslationY(-cardViewBottomPadding);
     }
 
-    private void moveSuggestListToInitialPos() {
-        //move the suggestions list to the collapsed position
-        //which is translationY of -listContainerHeight
-        mSuggestionListContainer.setTranslationY(-mSuggestionListContainer.getHeight());
-    }
-
     /**
      * Clears the current suggestions and replaces it
      * with the provided list of new suggestions.
@@ -1382,7 +1346,6 @@ public class FloatingSearchView extends FrameLayout {
 
     private void swapSuggestions(final List<? extends SearchSuggestion> newSearchSuggestions,
                                  final boolean withAnim) {
-
         mSuggestionsList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -1397,70 +1360,18 @@ public class FloatingSearchView extends FrameLayout {
 
     private void updateSuggestionsSectionHeight(List<? extends SearchSuggestion>
                                                         newSearchSuggestions, boolean withAnim) {
+        int newTranslationY = calculateSuggestionItemsHeight(newSearchSuggestions, mSuggestionsList.getHeight());
+        mSuggestionsList.setTranslationY(-newTranslationY);
 
-        final int cardTopBottomShadowPadding = Util.dpToPx(CARD_VIEW_CORNERS_AND_TOP_BOTTOM_SHADOW_HEIGHT);
-        final int cardRadiusSize = Util.dpToPx(CARD_VIEW_TOP_BOTTOM_SHADOW_HEIGHT);
-
-
-        int visibleSuggestionHeight = calculateSuggestionItemsHeight(newSearchSuggestions,
-                mSuggestionListContainer.getHeight());
-        int diff = mSuggestionListContainer.getHeight() - visibleSuggestionHeight;
-        int addedTranslationYForShadowOffsets = (diff <= cardTopBottomShadowPadding) ?
-                -(cardTopBottomShadowPadding - diff) :
-                diff < (mSuggestionListContainer.getHeight() - cardTopBottomShadowPadding) ? cardRadiusSize : 0;
-        final float newTranslationY = -mSuggestionListContainer.getHeight() +
-                visibleSuggestionHeight + addedTranslationYForShadowOffsets;
-
-        final boolean animateAtEnd = newTranslationY >= mSuggestionListContainer.getTranslationY();
-
-        //todo go over
-        final float fullyInvisibleTranslationY = -mSuggestionListContainer.getHeight() + cardRadiusSize;
-
-        ViewCompat.animate(mSuggestionListContainer).cancel();
+        ViewCompat.animate(mSuggestionsList).cancel();
         if (withAnim) {
-            ViewCompat.animate(mSuggestionListContainer).
-                    setInterpolator(SUGGEST_ITEM_ADD_ANIM_INTERPOLATOR).
-                    setDuration(mSuggestionSectionAnimDuration).
-                    translationY(newTranslationY)
-                    .setUpdateListener(new ViewPropertyAnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(View view) {
-
-                            if (mOnSuggestionsListHeightChanged != null) {
-                                float newSuggestionsHeight = Math.abs(view.getTranslationY() - fullyInvisibleTranslationY);
-                                mOnSuggestionsListHeightChanged.onSuggestionsListHeightChanged(newSuggestionsHeight);
-                            }
-                        }
-                    })
-                    .setListener(new ViewPropertyAnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationCancel(View view) {
-                            mSuggestionListContainer.setTranslationY(newTranslationY);
-                        }
-
-                        @Override
-                        public void onAnimationStart(View view) {
-                            if (!animateAtEnd) {
-                                mSuggestionsList.smoothScrollToPosition(0);
-                            }
-                        }
-
-                        @Override
-                        public void onAnimationEnd(View view) {
-                            if (animateAtEnd) {
-                                int lastPos = mSuggestionsList.getAdapter().getItemCount() - 1;
-                                if (lastPos > -1) {
-                                    mSuggestionsList.smoothScrollToPosition(lastPos);
-                                }
-                            }
-                        }
-                    }).start();
+            ViewCompat.animate(mSuggestionsList)
+                    .setInterpolator(SUGGEST_ITEM_ADD_ANIM_INTERPOLATOR)
+                    .setDuration(mSuggestionSectionAnimDuration)
+                    .translationY(0)
+                    .start();
         } else {
-            mSuggestionListContainer.setTranslationY(newTranslationY);
-            if (mOnSuggestionsListHeightChanged != null) {
-                float newSuggestionsHeight = Math.abs(mSuggestionListContainer.getTranslationY() - fullyInvisibleTranslationY);
-                mOnSuggestionsListHeightChanged.onSuggestionsListHeightChanged(newSuggestionsHeight);
-            }
+            mSuggestionsList.setTranslationY(0);
         }
     }
 
@@ -1514,7 +1425,6 @@ public class FloatingSearchView extends FrameLayout {
 
         if (focused) {
             mSearchInput.requestFocus();
-            moveSuggestListToInitialPos();
             mSuggestionsSection.setVisibility(VISIBLE);
             if (mDimBackground) {
                 fadeInBackground();
@@ -2070,7 +1980,7 @@ public class FloatingSearchView extends FrameLayout {
 
         //remove any ongoing animations to prevent leaks
         //todo investigate if correct
-        ViewCompat.animate(mSuggestionListContainer).cancel();
+        ViewCompat.animate(mSuggestionsList).cancel();
     }
 
     private class DrawerListener implements DrawerLayout.DrawerListener {
