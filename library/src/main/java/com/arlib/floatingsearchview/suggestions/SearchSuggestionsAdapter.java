@@ -62,9 +62,9 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public interface Listener {
 
-        void onItemSelected(SearchSuggestion item);
+        void onItemSelected(SearchSuggestion item, int position);
 
-        void onRightIconClicked(SearchSuggestion item);
+        void onRightIconClicked(SearchSuggestion item, int position);
     }
 
     public static class SearchSuggestionViewHolder extends RecyclerView.ViewHolder {

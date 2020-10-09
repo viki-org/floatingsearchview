@@ -262,7 +262,7 @@ public class FloatingSearchView extends FrameLayout {
          *
          * @param searchSuggestion
          */
-        void onSuggestionClicked(SearchSuggestion searchSuggestion);
+        void onSuggestionClicked(SearchSuggestion searchSuggestion, int position);
 
         /**
          * Called when the current search has completed
@@ -282,7 +282,7 @@ public class FloatingSearchView extends FrameLayout {
          *
          * @param searchSuggestion
          */
-        void onRemoveItemClicked(SearchSuggestion searchSuggestion);
+        void onRemoveItemClicked(SearchSuggestion searchSuggestion, int position);
     }
 
     /**
@@ -1312,9 +1312,9 @@ public class FloatingSearchView extends FrameLayout {
                 new SearchSuggestionsAdapter.Listener() {
 
                     @Override
-                    public void onItemSelected(SearchSuggestion item) {
+                    public void onItemSelected(SearchSuggestion item, int position) {
                         if (mSearchListener != null) {
-                            mSearchListener.onSuggestionClicked(item);
+                            mSearchListener.onSuggestionClicked(item, position);
                         }
 
                         /*mIsFocused = false;
@@ -1328,14 +1328,14 @@ public class FloatingSearchView extends FrameLayout {
                     }
 
                     @Override
-                    public void onRightIconClicked(SearchSuggestion item) {
+                    public void onRightIconClicked(SearchSuggestion item, int position) {
                         if (mSuggestionRightActionMode == RIGHT_ACTION_MODE_MOVE_UP) {
                             mSearchInput.setText(item.getBody());
                             //move cursor to end of text
                             mSearchInput.setSelection(mSearchInput.getText().length());
                         }
                         else if(mSuggestionRightActionMode == RIGHT_ACTION_MODE_REMOVE_ITEM && mSearchListener!=null) {
-                            mSearchListener.onRemoveItemClicked(item);
+                            mSearchListener.onRemoveItemClicked(item, position);
                         }
                     }
                 });
