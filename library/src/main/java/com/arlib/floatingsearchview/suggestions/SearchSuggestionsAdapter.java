@@ -138,7 +138,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.search_suggestion_item, viewGroup, false);
         SearchSuggestionViewHolder viewHolder = new SearchSuggestionViewHolder(view,
@@ -148,7 +147,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
                     public void onItemClicked(int adapterPosition) {
 
                         if (mListener != null) {
-                            mListener.onItemSelected(mSearchSuggestions.get(adapterPosition));
+                            mListener.onItemSelected(mSearchSuggestions.get(adapterPosition), adapterPosition);
                         }
                     }
 
@@ -157,7 +156,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                         if (mListener != null) {
                             mListener.onRightIconClicked(mSearchSuggestions
-                                    .get(adapterPosition));
+                                    .get(adapterPosition), adapterPosition);
                         }
                     }
 

@@ -1285,7 +1285,7 @@ public class FloatingSearchView extends FrameLayout {
     private void setupSuggestionSection() {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
-                LinearLayoutManager.VERTICAL, true);
+                LinearLayoutManager.VERTICAL, false);
         mSuggestionsList.setLayoutManager(layoutManager);
         mSuggestionsList.setItemAnimator(null);
 
@@ -1365,7 +1365,6 @@ public class FloatingSearchView extends FrameLayout {
      * @param newSearchSuggestions a list containing the new suggestions
      */
     public void swapSuggestions(final List<? extends SearchSuggestion> newSearchSuggestions) {
-        Collections.reverse(newSearchSuggestions);
         swapSuggestions(newSearchSuggestions, true);
     }
 

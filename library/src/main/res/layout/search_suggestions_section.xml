@@ -11,6 +11,7 @@
         android:id="@+id/suggestions_list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        card_view:cardBackgroundColor="@color/transparent"
         card_view:cardUseCompatPadding="true">
 
         <androidx.recyclerview.widget.RecyclerView
