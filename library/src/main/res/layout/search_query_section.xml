@@ -52,7 +52,7 @@
 
             <com.arlib.floatingsearchview.util.view.SearchInputView
                 android:id="@+id/search_bar_text"
-                android:layout_width="match_parent"
+                android:layout_width="349dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|start"
                 android:alpha="1"
