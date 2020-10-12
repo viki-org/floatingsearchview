@@ -7,27 +7,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <include layout="@layout/search_query_section" />
-        </FrameLayout>
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="5dp"
-            android:background="@color/divider_color"
-            android:visibility="gone" />
-    </FrameLayout>
+    <include layout="@layout/search_query_section" />
 
     <include layout="@layout/search_suggestions_section" />
 </LinearLayout>

@@ -18,7 +18,6 @@ package com.arlib.floatingsearchview.suggestions;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +49,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
     private boolean mShowRightIcon = false;
     private int mBodyTextSizePx;
     private int mTextColor = -1;
-    private int mDividerColor = -1;
     private float mRotateAngle = 0;
 
     public interface OnBindSuggestionCallback {
@@ -62,9 +60,9 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     public interface Listener {
 
-        void onItemSelected(SearchSuggestion item);
+        void onItemSelected(SearchSuggestion item, int position);
 
-        void onRightIconClicked(SearchSuggestion item);
+        void onRightIconClicked(SearchSuggestion item, int position);
     }
 
     public static class SearchSuggestionViewHolder extends RecyclerView.ViewHolder {
@@ -72,7 +70,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         public TextView body;
         public ImageView leftIcon;
         public ImageView rightIcon;
-        public View divider;
 
         private Listener mListener;
 
@@ -90,7 +87,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
             body = (TextView) v.findViewById(R.id.body);
             leftIcon = (ImageView) v.findViewById(R.id.left_icon);
             rightIcon = (ImageView) v.findViewById(R.id.right_icon);
-            divider = v.findViewById(R.id.divider);
 
             rightIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -138,7 +134,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.search_suggestion_item, viewGroup, false);
         SearchSuggestionViewHolder viewHolder = new SearchSuggestionViewHolder(view,
@@ -148,7 +143,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
                     public void onItemClicked(int adapterPosition) {
 
                         if (mListener != null) {
-                            mListener.onItemSelected(mSearchSuggestions.get(adapterPosition));
+                            mListener.onItemSelected(mSearchSuggestions.get(adapterPosition), adapterPosition);
                         }
                     }
 
@@ -157,7 +152,7 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
 
                         if (mListener != null) {
                             mListener.onRightIconClicked(mSearchSuggestions
-                                    .get(adapterPosition));
+                                    .get(adapterPosition), adapterPosition);
                         }
                     }
 
@@ -166,9 +161,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         viewHolder.rightIcon.setImageDrawable(mRightIconDrawable);
         viewHolder.rightIcon.setRotation(mRotateAngle);
         viewHolder.body.setTextSize(TypedValue.COMPLEX_UNIT_PX, mBodyTextSizePx);
-
-        if (mDividerColor != -1)
-            viewHolder.divider.setBackgroundColor(mDividerColor);
 
         return viewHolder;
     }
@@ -216,18 +208,6 @@ public class SearchSuggestionsAdapter extends RecyclerView.Adapter<RecyclerView.
         DrawableCompat.setTint(mRightIconDrawable, color);
         this.mRotateAngle = rotateAngle;
         notifyDataSetChanged();
-    }
-
-    public void setDividerColor(@ColorInt int color) {
-
-        boolean notify = false;
-        if (this.mDividerColor != color) {
-            notify = true;
-        }
-        this.mDividerColor = color;
-        if (notify) {
-            notifyDataSetChanged();
-        }
     }
 
     public void setShowRightIcon(boolean show) {
