@@ -168,6 +168,7 @@ public class FloatingSearchView extends FrameLayout {
     private OnLeftMenuClickListener mOnMenuClickListener;
     private OnHomeActionClickListener mOnHomeActionClickListener;
     private View.OnClickListener mOnBackClickListener;
+    private View.OnClickListener mOnClearClickListener;
     private ProgressBar mSearchProgress;
     private DrawerArrowDrawable mMenuBtnDrawable;
     private Drawable mIconBackArrow;
@@ -577,7 +578,11 @@ public class FloatingSearchView extends FrameLayout {
         mClearButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSearchInput.setText("");
+                if (mOnClearClickListener != null) {
+                    mOnClearClickListener.onClick(v);
+                } else {
+                    mSearchInput.setText("");
+                }
             }
         });
 
@@ -1983,5 +1988,8 @@ public class FloatingSearchView extends FrameLayout {
     public void setOnBackModeClickListener(OnClickListener listener) {
         this.mOnBackClickListener = listener;
     }
-    
+
+    public void setOnClearClickListener(OnClickListener listener) {
+        this.mOnClearClickListener = listener;
+    }
 }
