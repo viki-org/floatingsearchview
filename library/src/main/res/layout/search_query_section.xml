@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:focusable="true"
     card_view:cardUseCompatPadding="false">
 
     <RelativeLayout
@@ -28,6 +29,7 @@
                 android:alpha="1"
                 android:background="@drawable/oval_btn_selector"
                 android:clickable="true"
+                android:focusable="true"
                 android:padding="@dimen/square_button_padding"
                 android:src="@drawable/ic_arrow_back_black_24dp" />
 
@@ -45,10 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
-            android:layout_toEndOf="@+id/search_bar_left_action_container"
-            android:layout_toRightOf="@+id/search_bar_left_action_container">
+            android:layout_toEndOf="@+id/search_bar_left_action_container">
 
             <com.arlib.floatingsearchview.util.view.SearchInputView
                 android:id="@+id/search_bar_text"
@@ -72,11 +72,11 @@
             android:layout_width="@dimen/square_button_size"
             android:layout_height="@dimen/square_button_size"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:alpha="1"
             android:background="@drawable/oval_btn_selector"
             android:clickable="true"
+            android:focusable="true"
             android:padding="@dimen/square_button_padding" />
 
         <com.arlib.floatingsearchview.util.view.MenuView
@@ -84,7 +84,6 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/square_button_size"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:orientation="horizontal" />
     </RelativeLayout>
