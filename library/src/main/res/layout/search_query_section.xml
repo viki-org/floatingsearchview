@@ -61,7 +61,6 @@
                 android:hint="@string/abc_search_hint"
                 android:imeOptions="actionSearch"
                 android:inputType="textNoSuggestions"
-                android:longClickable="false"
                 android:maxLines="1"
                 android:minHeight="@dimen/square_button_size"
                 android:singleLine="true" />
